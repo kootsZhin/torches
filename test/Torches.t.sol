@@ -11,23 +11,22 @@ contract CreateTorchesTest is Test {
     address Bob = address(0x54321);
 
     uint256 initLightTime = block.timestamp;
-    uint256 fuelPeriod = 100;
 
     function setUp() public {
         torches = new Torches();
     }
 
-    function testCreateTorch() public {
-        address t = torches.light{value: 1 ether}(Alice, Bob, fuelPeriod);
+    function testCreateTorch(uint8 amount, uint8 _fuelPeriod) public {
+        address t = torches.light{value: amount}(Alice, Bob, _fuelPeriod);
 
         Torch torch = Torch(payable(t));
 
         assertEq(address(torch.owner()), Alice);
         assertEq(torch.beneficiary(), Bob);
-        assertEq(torch.fuelPeriod(), fuelPeriod);
+        assertEq(torch.fuelPeriod(), _fuelPeriod);
         assertEq(torch.lastFuelTime(), initLightTime);
 
-        assertEq(address(torch).balance, 1 ether);
+        assertEq(address(torch).balance, amount);
         assertEq(address(torches).balance, 0);
     }
 }
