@@ -33,6 +33,13 @@ contract Torch is ITorch, Ownable {
         address beneficiary_,
         uint256 fuelPeriod_
     ) {
+        require(owner_ != beneficiary_, "Torch: owner is the beneficiary");
+        require(owner_ != address(0), "Torch: owner is the zero address");
+        require(
+            beneficiary_ != address(0),
+            "Torch: beneficiary is the zero address"
+        );
+
         if (owner_ != msg.sender) transferOwnership(owner_);
 
         _beneficiary = beneficiary_;
@@ -86,20 +93,22 @@ contract Torch is ITorch, Ownable {
                 block.timestamp - _lastFuelTime <= _fuelPeriod,
                 "Torch: the torch went out of fuel already"
             );
+
             (bool success, ) = payable(owner()).call{
                 value: address(this).balance
             }("");
-            require(success, "Withdraw failed");
-        }
 
-        if (msg.sender == _beneficiary) {
+            require(success, "Withdraw failed");
+        } else {
             require(
                 block.timestamp - _lastFuelTime > _fuelPeriod,
                 "Torch: the torch is still burning"
             );
+
             (bool success, ) = payable(_beneficiary).call{
                 value: address(this).balance
             }("");
+
             require(success, "Withdraw failed");
         }
     }
