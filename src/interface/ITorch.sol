@@ -3,16 +3,6 @@ pragma solidity ^0.8.13;
 
 interface ITorch {
     /**
-     * @dev Emitted when 'owner' execute the create a new 'torch'.
-     */
-    event Light(
-        address indexed owner,
-        address indexed beneficiary,
-        uint256 fuelPeriod,
-        uint256 fuelTime
-    );
-
-    /**
      * @dev Emitted when 'owner' execute the 'fuel' function of the 'torch'.
      */
     event Fuel(
@@ -28,7 +18,7 @@ interface ITorch {
 
     /**
      * @dev 'Owner' can 'withdraw' ethers from the 'torch' contract when it is burning,
-     *'beneficiary' can 'withdraw' ethers from the 'torch' contract when it goes out.
+     *'beneficiary' can 'withdraw' ethers from the 'torch' contract when it burns out.
      */
     function withdraw() external;
 

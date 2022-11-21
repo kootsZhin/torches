@@ -21,6 +21,11 @@ contract Torch is ITorch, Ownable {
     uint256 private _lastFuelTime;
 
     /**
+     * @dev The 'lightTime' is the timestamp of the time when the 'torch' was initially lighted.
+     */
+    uint256 private _lightTime;
+
+    /**
      * @dev The constructor 'lights' the 'torch' contract.
      */
     constructor(
@@ -33,8 +38,7 @@ contract Torch is ITorch, Ownable {
         _beneficiary = beneficiary_;
         _fuelPeriod = fuelPeriod_;
         _lastFuelTime = block.timestamp;
-
-        emit Light(address(owner()), _beneficiary, _fuelPeriod, _lastFuelTime);
+        _lightTime = _lastFuelTime;
     }
 
     function beneficiary() public view returns (address) {
@@ -49,6 +53,13 @@ contract Torch is ITorch, Ownable {
         return _lastFuelTime;
     }
 
+    function lightTime() public view returns (uint256) {
+        return _lightTime;
+    }
+
+    /**
+     * @dev 'Owner' has to 'fuel' the 'torch' every 'fuelPeriod' to keep it burning.
+     */
     function fuel() external onlyOwner {
         require(
             block.timestamp - _lastFuelTime <= _fuelPeriod,
@@ -60,6 +71,10 @@ contract Torch is ITorch, Ownable {
         emit Fuel(address(owner()), _beneficiary, _lastFuelTime);
     }
 
+    /**
+     * @dev 'Owner' can 'withdraw' ethers from the 'torch' contract when it is burning,
+     *'beneficiary' can 'withdraw' ethers from the 'torch' contract when it burns out.
+     */
     function withdraw() external {
         require(
             msg.sender == address(owner()) || msg.sender == _beneficiary,
@@ -89,5 +104,8 @@ contract Torch is ITorch, Ownable {
         }
     }
 
+    /**
+     * @dev The contract is payable
+     */
     receive() external payable {}
 }
