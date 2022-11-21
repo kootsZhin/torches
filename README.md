@@ -26,7 +26,7 @@ function light(
 ```
 
 ### [`torch.sol`](./src/Torch.sol)
-Main logic of the smart contract, super simple and poorly optimized.
+Main logic of the smart contract, highly straightforward and poorly optimized.
 
 ## Test
 
