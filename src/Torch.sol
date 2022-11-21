@@ -93,24 +93,18 @@ contract Torch is ITorch, Ownable {
                 block.timestamp - _lastFuelTime <= _fuelPeriod,
                 "Torch: the torch went out of fuel already"
             );
-
-            (bool success, ) = payable(owner()).call{
-                value: address(this).balance
-            }("");
-
-            require(success, "Withdraw failed");
         } else {
             require(
                 block.timestamp - _lastFuelTime > _fuelPeriod,
                 "Torch: the torch is still burning"
             );
-
-            (bool success, ) = payable(_beneficiary).call{
-                value: address(this).balance
-            }("");
-
-            require(success, "Withdraw failed");
         }
+
+        (bool success, ) = payable(msg.sender).call{
+            value: address(this).balance
+        }("");
+
+        require(success, "Withdraw failed");
     }
 
     /**
